@@ -22,7 +22,7 @@ import sys
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logging.getLogger().addHandler(logging.StreamHandler(stream=sys.stdout))
 
-#soring index locally
+#sorting index locally
 import os.path
 from llama_index.core import (
     VectorStoreIndex,
