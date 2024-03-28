@@ -31,7 +31,7 @@ def main():
     )
 
     query_engine = index.as_query_engine()
-    response = query_engine.query("What is the main business of Oracle Corporation?")
+    response = query_engine.query("What is the total operating expenses in 2022?")
     print(textwrap.fill(str(response), 100))
     #response = query_engine.query("How much shares or other units to be sold?")
     #print(textwrap.fill(str(response), 100))
