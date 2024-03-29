@@ -25,13 +25,12 @@ def query_documents():
     storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
     # Split documents into nodes (sentences)
-    text_parser = SentenceSplitter(chunk_size=1024)
+    text_parser = SentenceSplitter(chunk_size=512, chunk_overlap=50)
     nodes = text_parser.get_nodes_from_documents(documents)
     #print(nodes[:5]) #:- Checking whether the text are chunked into nodes.
 
     # Add nodes to the vector store
     #vector_store.add(nodes)
-    
 
     # Create index
     '''index = VectorStoreIndex.from_documents(
@@ -48,9 +47,9 @@ def query_documents():
     query_engine = index.as_query_engine(llm=llm)
     
     # Perform query
-    #query1 ="How many full-time employees were reported by Oracle Corporation as of May 31, 2022?"
+    query1 ="How many full-time employees were reported by Oracle Corporation as of May 31, 2022?"
     #query1 ="What is the net income of Oracle corporation by February 28 2023?"
-    query1 = "Which company acquisition was completed by Oracle Corporation on June 8, 2022?"
+    #query1 = "Which company acquisition was completed by Oracle Corporation on June 8, 2022?"
     response = query_engine.query(query1)
     print(response)
 

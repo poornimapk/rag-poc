@@ -18,10 +18,10 @@ def main():
 
     # Initialize SimpleDirectoryReader with the path to your directory containing documents
     documents = SimpleDirectoryReader("./data/oracle/").load_data()
-
+    
     Settings.chunk_size = 512
     Settings.chunk_overlap = 50
-
+    
     vector_store = MilvusVectorStore(dim=1536, overwrite=True)
     storage_context = StorageContext.from_defaults(vector_store=vector_store)
     index = VectorStoreIndex.from_documents(
