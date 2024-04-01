@@ -36,8 +36,12 @@ load_dotenv()
 documents = SimpleDirectoryReader("./data/oracle/").load_data()
 
 # Initialize RelevancyEvaluator
-llm = OpenAI(model="gpt-3.5-turbo")
-evaluator_gpt4 = RelevancyEvaluator(llm=llm)
+llm3 = OpenAI(model="gpt-3.5-turbo")
+evaluator_gpt3 = RelevancyEvaluator(llm=llm3)
+
+# Initialize RelevancyEvaluator
+llm4 = OpenAI(model="gpt-4")
+evaluator_gpt4 = RelevancyEvaluator(llm=llm4)
 
 Settings.chunk_size = 512
 Settings.chunk_overlap = 50

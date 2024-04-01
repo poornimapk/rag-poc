@@ -7,6 +7,15 @@ from llama_index.core import VectorStoreIndex, StorageContext, ServiceContext
 from llama_index.vector_stores.milvus import MilvusVectorStore
 from llama_index.core import Settings
 from llama_index.llms.openai import OpenAI
+from llama_index.core.llama_dataset import (
+    LabeledRagDataset,
+    LabeledPairwiseEvaluatorDataset,
+    CreatedBy,
+    CreatedByType,
+    LabeledRagDataExample,
+)
+from llama_index.core.llama_dataset.generator import RagDatasetGenerator
+from llama_index.core.llama_dataset.generator import LabelledRagDataset
 from llama_index.core.evaluation import (
     DatasetGenerator,
     CorrectnessEvaluator,
@@ -21,6 +30,7 @@ def main():
 
     llm_gpt3 = OpenAI("gpt-3.5-turbo")
     llm_gpt4 = OpenAI("gpt-4")
+    
     #evaluator_gpt3 = RelevancyEvaluator(llm_gpt3)
     evaluator_gpt4 = RelevancyEvaluator(llm_gpt4)
 
@@ -28,14 +38,16 @@ def main():
     documents = SimpleDirectoryReader("./data/oracle/").load_data()
 
     # create dataset_generator for generating eval questions
-    dataset_generator = DatasetGenerator.from_documents(
+    
+    dataset_generator = RagDatasetGenerator.from_documents(
         documents=documents,
-        llm=llm_gpt4,
+        #llm=llm_gpt4,
         #num_questions_per_chunk=1,
         )
 
     # create eval_questions from dataset_generator
-    eval_questions = dataset_generator.generate_questions_from_nodes(50)
+    #eval_questions = dataset_generator.generate_questions_from_nodes(3)
+    eval_questions = dataset_generator.generate_dataset_from_nodes(3)
 
     print(eval_questions[:10])
     print("Total number of queries: ", len(eval_questions))
