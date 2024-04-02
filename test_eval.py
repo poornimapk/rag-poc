@@ -10,6 +10,8 @@ import pytest
 from llama_index.vector_stores.milvus import MilvusVectorStore
 from llama_index.core.evaluation import (
     RelevancyEvaluator,
+    FaithfulnessEvaluator,
+    CorrectnessEvaluator,
 )
 from llama_index.llms.openai import OpenAI
 
@@ -37,11 +39,19 @@ documents = SimpleDirectoryReader("./data/oracle/").load_data()
 
 # Initialize RelevancyEvaluator
 llm3 = OpenAI(model="gpt-3.5-turbo")
-evaluator_gpt3 = RelevancyEvaluator(llm=llm3)
+relevancy_evaluator_gpt3 = RelevancyEvaluator(llm=llm3)
 
 # Initialize RelevancyEvaluator
 llm4 = OpenAI(model="gpt-4")
-evaluator_gpt4 = RelevancyEvaluator(llm=llm4)
+relevancy_evaluator_gpt4 = RelevancyEvaluator(llm=llm4)
+
+# Initialize CorrectnessEvaluator
+llm3 = OpenAI(model="gpt-3.5-turbo")
+correctness_evaluator_gpt3 = CorrectnessEvaluator(llm=llm3)
+
+# Initialize CorrectnessEvaluator
+llm4 = OpenAI(model="gpt-4")
+correctness_evaluator_gpt4 = CorrectnessEvaluator(llm=llm4)
 
 Settings.chunk_size = 512
 Settings.chunk_overlap = 50
@@ -60,19 +70,40 @@ json_data = load_json_file("./testdata/testdata.json")
 
 input_output_pairs = generate_input_output_pairs_from_json(json_data)
 
+
 @pytest.mark.parametrize(
         "input_output_pair",
         input_output_pairs
 )
-def test_llamaindex(input_output_pair: dict):
+def test_llamaindex_relevancy(input_output_pair: dict):
     query = input_output_pair.get("input", None)
     expected_output = input_output_pair.get("expected_output", None)
 
     actual_output = query_engine.query(query)
 
-    eval_result = evaluator_gpt4.evaluate_response(
+    eval_result = relevancy_evaluator_gpt4.evaluate_response(
         query=query,
         response=actual_output,
     )
 
+    print(eval_result.response)
+    assert eval_result.passing == True
+
+
+@pytest.mark.parametrize(
+        "input_output_pair",
+        input_output_pairs
+)
+def test_llamaindex_correctness(input_output_pair: dict):
+    query = input_output_pair.get("input", None)
+    expected_output = input_output_pair.get("expected_output", None)
+
+    actual_output = query_engine.query(query)
+
+    eval_result = correctness_evaluator_gpt4.evaluate_response(
+        query=query,
+        response=actual_output,
+    )
+
+    print(eval_result.response)
     assert eval_result.passing == True
